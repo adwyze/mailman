@@ -36,6 +36,10 @@ module Mailman::SpecHelpers
     Mail.new("To: test@example.com\r\nFrom: chunky@bacon.com\r\nCC: testing@example.com\r\nX-Forwarded-To: Test1\r\nX-Forwarded-To: Test2\r\nSubject: Hello!\r\n\r\nemail message\r\n")
   end
 
+  def message_without_to
+    Mail.new("From: chunky@bacon.com\r\nCC: testing@example.com\r\nX-Forwarded-To: Test1\r\nDelivered-To: test@example.com\r\nX-Forwarded-To: Test2\r\nSubject: Hello!\r\n\r\nemail message\r\n")
+  end
+
   def multipart_message
     mail = Mail.new do
       to   'test@example.com'
