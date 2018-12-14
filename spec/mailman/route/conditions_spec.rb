@@ -18,6 +18,13 @@ describe Mailman::Route::ToCondition do
     expect(Mailman::Route.new.to('test').conditions[0].class).to eq(Mailman::Route::ToCondition)
   end
 
+  it 'should match an address successfully even w/o `To` but with `Delivered-To` as header w/o captures' do
+    expect(Mailman::Route::ToCondition.new('test@example.com').match(message_without_to)).to eq([{}, []])
+  end
+
+  it 'should match an address successfully even w/o `To` but with `Delivered-To` as header with captures' do
+    expect(Mailman::Route::ToCondition.new('%test%@example.com').match(message_without_to)).to eq([{:test => 'test'}, ['test']])
+  end
 end
 
 describe Mailman::Route::FromCondition do

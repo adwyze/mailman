@@ -4,8 +4,14 @@ module Mailman
     # Matches against the To addresses of a message.
     class ToCondition < Condition
       def match(message)
-        if !message.to.nil?
+        # this is done for cases where the `to` field is missing but does
+        # have a `Delivered-To` - so we pick from that instead
+        unless message.to.nil? && message.header['Delivered-To'].nil?
           messageto = message.to.is_a?(Array) ? message.to : [message.to]
+          messageto_from_headers = [message.header['Delivered-To']].flatten
+                                                                   .compact
+                                                                   .map(&:to_s)
+          messageto.concat(messageto_from_headers)
           messageto.each do |address|
             if result = @matcher.match(address)
               return result
